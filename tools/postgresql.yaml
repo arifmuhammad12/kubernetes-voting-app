@@ -58,7 +58,7 @@ spec:
           protocol: TCP
         envFrom:
           - secretRef:
-              name: vault-be-secret
+              name: rif07-database-secret
         livenessProbe:
           exec:
             command:

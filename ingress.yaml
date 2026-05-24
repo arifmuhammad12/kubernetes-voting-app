@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rif07-ingress
+  namespace: challenge-adinusa
+spec:
+  ingressClassName: nginx
+
+  rules:
+  - host: votes.rif07.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rif07-votes-svc
+            port:
+              number: 8080
+
+  - host: results.rif07.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rif07-results-svc
+            port:
+              number: 80

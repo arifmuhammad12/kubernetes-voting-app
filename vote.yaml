@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rif07-votes
+  namespace: challenge-adinusa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: votes
+  template:
+    metadata:
+      labels:
+        app: votes
+    spec:
+      containers:
+      - name: votes
+        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07:vote-v1
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 8080
+
+        env:
+        - name: KAFKA
+          value: kafka:9092
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rif07-votes-svc
+  namespace: challenge-adinusa
+spec:
+  selector:
+    app: votes
+  ports:
+  - port: 8080
+    targetPort: 8080

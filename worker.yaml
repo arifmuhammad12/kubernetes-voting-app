@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rif07-worker
+  namespace: challenge-adinusa
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+
+  template:
+    metadata:
+      labels:
+        app: worker
+
+    spec:
+      containers:
+      - name: worker
+        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07:worker-v1
+        imagePullPolicy: Always
+
+        env:
+        - name: KAFKA
+          value: kafka.challenge-adinusa.svc.cluster.local:9092
+
+        - name: PGHOST
+          value: postgresql.challenge-adinusa.svc.cluster.local
+
+        - name: PGPORT
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_PORT
+
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_USER
+
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_PASSWORD
+
+        - name: PGDATABASE
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_DB
+
+        envFrom:
+        - secretRef:
+            name: rif07-database-secret
