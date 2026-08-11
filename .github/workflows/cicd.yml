@@ -1,0 +1,187 @@
+name: Voting App CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+env:
+  REGISTRY: registry.adinusa.id
+  REGISTRY_PROJECT: rif07
+
+  VOTE_IMAGE: registry.adinusa.id/rif07/votes
+  WORKER_IMAGE: registry.adinusa.id/rif07/worker
+  RESULT_IMAGE: registry.adinusa.id/rif07/results
+
+jobs:
+
+  build:
+    name: Build Images
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Vote
+        run: |
+          docker build \
+            -t $VOTE_IMAGE:${GITHUB_SHA} \
+            -t $VOTE_IMAGE:latest \
+            ./votes
+
+      - name: Build Worker
+        run: |
+          docker build \
+            -t $WORKER_IMAGE:${GITHUB_SHA} \
+            -t $WORKER_IMAGE:latest \
+            ./worker
+
+      - name: Build Result
+        run: |
+          docker build \
+            -t $RESULT_IMAGE:${GITHUB_SHA} \
+            -t $RESULT_IMAGE:latest \
+            ./results
+
+      - name: Push Vote
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push $VOTE_IMAGE:${GITHUB_SHA}
+          docker push $VOTE_IMAGE:latest
+
+      - name: Push Worker
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push $WORKER_IMAGE:${GITHUB_SHA}
+          docker push $WORKER_IMAGE:latest
+
+      - name: Push Result
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push $RESULT_IMAGE:${GITHUB_SHA}
+          docker push $RESULT_IMAGE:latest
+
+
+#   deploy:
+#     name: Deploy to Kubernetes
+#     needs: build
+#     if: github.event_name != 'pull_request'
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Setup kubectl
+#         uses: azure/setup-kubectl@v4
+#         with:
+#           version: latest
+
+#       - name: Configure Kubernetes
+#         run: |
+#           mkdir -p ~/.kube
+
+#           echo "${{ secrets.KUBE_CONFIG }}" \
+#             | base64 --decode \
+#             > ~/.kube/config
+
+#           chmod 600 ~/.kube/config
+
+#       - name: Check Kubernetes
+#         run: |
+#           kubectl cluster-info
+#           kubectl get nodes
+
+
+#       - name: Deploy PostgreSQL
+#         run: |
+#           kubectl apply -f tools/postgres/
+
+#       - name: Deploy Kafka
+#         run: |
+#           kubectl apply -f tools/kafka/
+
+#       - name: Deploy Vote
+#         run: |
+#           kubectl apply -f k8s/vote.yaml
+
+#       - name: Deploy Worker
+#         run: |
+#           kubectl apply -f k8s/worker.yaml
+
+#       - name: Deploy Result
+#         run: |
+#           kubectl apply -f k8s/result.yaml
+
+#       - name: Deploy Ingress
+#         run: |
+#           kubectl apply -f k8s/ingress.yaml
+
+
+#       - name: Update Vote Image
+#         run: |
+#           kubectl set image \
+#             deployment/rif07-votes \
+#             vote=$VOTE_IMAGE:${GITHUB_SHA}
+
+#       - name: Update Worker Image
+#         run: |
+#           kubectl set image \
+#             deployment/rif07-worker \
+#             worker=$WORKER_IMAGE:${GITHUB_SHA}
+
+#       - name: Update Result Image
+#         run: |
+#           kubectl set image \
+#             deployment/rif07-results \
+#             result=$RESULT_IMAGE:${GITHUB_SHA}
+
+
+#       - name: Rollout Vote
+#         run: |
+#           kubectl rollout status \
+#             deployment/rif07-votes \
+#             --timeout=180s
+
+#       - name: Rollout Worker
+#         run: |
+#           kubectl rollout status \
+#             deployment/rif07-worker \
+#             --timeout=180s
+
+#       - name: Rollout Result
+#         run: |
+#           kubectl rollout status \
+#             deployment/rif07-results \
+#             --timeout=180s
+
+   
+#       - name: Verify
+#         run: |
+#           echo "===== PODS ====="
+#           kubectl get pods
+
+#           echo "===== SERVICES ====="
+#           kubectl get svc
+
+#           echo "===== DEPLOYMENTS ====="
+#           kubectl get deployment
+
+#           echo "===== INGRESS ====="
+#           kubectl get ingress
