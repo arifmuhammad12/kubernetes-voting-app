@@ -15,9 +15,9 @@ env:
   REGISTRY: registry.adinusa.id
   REGISTRY_PROJECT: rif07
 
-  VOTE_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/vote
-  WORKER_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/worker
-  RESULT_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/result
+  VOTE_IMAGE: registry.adinusa.id/rif07/votes
+  WORKER_IMAGE: registry.adinusa.id/rif07/worker
+  RESULT_IMAGE: registry.adinusa.id/rif07/results
 
 jobs:
 
@@ -42,7 +42,7 @@ jobs:
           docker build \
             -t $VOTE_IMAGE:${GITHUB_SHA} \
             -t $VOTE_IMAGE:latest \
-            ./vote
+            ./votes
 
       - name: Build Worker
         run: |
@@ -56,7 +56,7 @@ jobs:
           docker build \
             -t $RESULT_IMAGE:${GITHUB_SHA} \
             -t $RESULT_IMAGE:latest \
-            ./result
+            ./results
 
       - name: Push Vote
         if: github.event_name != 'pull_request'
