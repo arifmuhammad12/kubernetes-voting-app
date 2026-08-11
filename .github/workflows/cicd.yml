@@ -13,11 +13,12 @@ on:
 
 env:
   REGISTRY: registry.adinusa.id
-  REGISTRY_PROJECT: rif07
+  REGISTRY_PROJECT: project-kubernetes-bootcamp
+  REGISTRY_REPOSITORY: rif07
 
-  VOTE_IMAGE: registry.adinusa.id/rif07/votes
-  WORKER_IMAGE: registry.adinusa.id/rif07/worker
-  RESULT_IMAGE: registry.adinusa.id/rif07/results
+  VOTE_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/vote
+  WORKER_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/worker
+  RESULT_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/result
 
 jobs:
 
