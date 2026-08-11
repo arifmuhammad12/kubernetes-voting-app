@@ -15,9 +15,9 @@ env:
   REGISTRY: registry.adinusa.id
   REGISTRY_PROJECT: rif07
 
-  VOTE_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07rif07/vote
-  WORKER_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07rif07/worker
-  RESULT_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07rif07/result
+  VOTE_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/vote
+  WORKER_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/worker
+  RESULT_IMAGE: registry.adinusa.id/project-kubernetes-bootcamp/rif07/result
 
 jobs:
 
