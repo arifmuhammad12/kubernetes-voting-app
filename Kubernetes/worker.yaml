@@ -16,9 +16,11 @@ spec:
         app: worker
 
     spec:
+      imagePullSecrets: 
+      - name: harbor-secret
       containers:
       - name: worker
-        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07:worker-v1
+        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07/worker:latest
         imagePullPolicy: Always
 
         env:

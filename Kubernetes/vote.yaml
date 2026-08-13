@@ -13,9 +13,12 @@ spec:
       labels:
         app: votes
     spec:
+      imagePullSecrets: 
+      - name: harbor-secret
+      
       containers:
       - name: votes
-        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07:vote-v1
+        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07/votes:latest
         imagePullPolicy: Always
 
         ports:

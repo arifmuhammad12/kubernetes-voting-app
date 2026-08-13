@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rif07-results
+  namespace: challenge-adinusa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: results
+  template:
+    metadata:
+      labels:
+        app: results
+    spec:
+      imagePullSecrets: 
+      - name: harbor-secret
+
+      containers:
+      - name: results
+        image: registry.adinusa.id/project-kubernetes-bootcamp/rif07/results:latest
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 80
+
+        env:
+        - name: PGHOST
+          value: postgresql.challenge-adinusa.svc.cluster.local
+
+        - name: PGPORT
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_PORT
+
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_USER
+
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_PASSWORD
+    
+        - name: PGDATABASE
+          valueFrom:
+            secretKeyRef:
+              name: rif07-database-secret
+              key: POSTGRES_DB
+
+        envFrom:
+        - secretRef:
+            name: rif07-database-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rif07-results-svc
+  namespace: challenge-adinusa
+spec:
+  selector:
+    app: results
+  ports:
+  - port: 80
+    targetPort: 80
