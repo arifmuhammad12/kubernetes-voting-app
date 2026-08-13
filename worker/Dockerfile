@@ -1,4 +1,4 @@
-FROM golang:1.26-bookworm AS dev
+FROM docker.io/library/golang:1.26-bookworm AS dev
 
 COPY bashrc /root/.bashrc
 
