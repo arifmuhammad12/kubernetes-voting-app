@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM eclipse-temurin:22-jre-jammy
+FROM docker.io/library/eclipse-temurin:22-jre-jammy
 
 RUN addgroup --system --gid 1001 spring && \
     adduser --system --uid 1001 --gid 1001 spring
