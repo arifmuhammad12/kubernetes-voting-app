@@ -92,7 +92,7 @@ public class VoteController {
 
     public static class Vote {
         private String optionA = "SRE";
-        private String optionB = "Cloud Engineer";
+        private String optionB = "devOps";
         private String hostname = "unknown";
         private String vote;
 
